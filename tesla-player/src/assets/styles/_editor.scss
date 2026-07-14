@@ -133,10 +133,9 @@
     margin: 0;
     padding: 0.9rem 2rem;
     background: transparent;
-    transition:
-        background 0.2s,
-        backdrop-filter 0.2s;
+    transition: all ease 200ms;
     pointer-events: none; // transparent zone lets clicks reach content
+    min-height: 5rem;
 }
 .screen-head > * {
     pointer-events: auto;
@@ -148,7 +147,7 @@
     backdrop-filter: blur(8px);
 }
 .screen-body {
-    padding: 1.3rem 2rem 2rem;
+    padding: 0rem 2rem 1.4rem;
 }
 // variant: body fills the remaining viewport height so columns can stretch and
 // scroll internally (used by the Play screen so the player fills its column).
@@ -195,7 +194,7 @@
     min-width: 0;
     min-height: 0;
     align-self: stretch;
-    padding: 1.3rem 1.8rem 0 0;
+    padding-right: 1rem;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -212,10 +211,10 @@
     width: 400px;
     align-self: flex-start;
     position: sticky;
-    top: 4.2rem;
+    top: 5rem;
     // fill the viewport beside the (scrolling) editor; leave a small bottom gap so
     // the player bottom lines up with the sticky save button.
-    height: calc(100vh - 4.2rem - 3.3rem);
+    height: calc(100vh - 5rem - 1rem);
     display: flex;
     flex-direction: column;
     padding-left: 1rem;
@@ -223,8 +222,8 @@
 // the draggable divider rides with the sticky dock (stays fixed while the editor scrolls)
 .edit-body__split {
     position: sticky;
-    top: 4.2rem;
-    height: calc(100vh - 4.2rem - 3.3rem);
+    top: 5rem;
+    height: calc(100vh - 5rem - 1rem);
     align-self: flex-start;
 }
 .edit-body__dock .player-panel {
@@ -283,12 +282,11 @@
     gap: 0.7rem;
     align-items: center;
     justify-content: flex-end;
-    margin-top: auto;
-    padding: 0.9rem 0;
+    margin-top: -1.4rem;
+    padding: 1.4rem 0;
     background: var(--scrim-72);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    border-top: 1px solid var(--line);
 }
 .editor-footer__delete {
     margin-right: auto;

@@ -335,7 +335,7 @@ function doDelete(): void {
 /* sticky footer */
 .pl-footer {
   display: flex; align-items: center; gap: 0.7rem; flex: 0 0 auto;
-  padding: 0.9rem 0 0.2rem;
+  padding-top: 0.4rem;
 }
 .pl-footer__save { margin-left: auto; }
 </style>

@@ -54,7 +54,7 @@ function onPointerUp(e: PointerEvent): void {
 
 <style scoped>
 .resize-handle {
-  width: 14px;
+  width: 2rem;
   flex: 0 0 auto;
   display: flex;
   align-items: center;

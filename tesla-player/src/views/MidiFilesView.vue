@@ -20,7 +20,7 @@ function openInstruments(file: MidiFile): void {
 
 <template>
   <div class="screen">
-    <header class="screen-head" style="min-height: 72.763px;">
+    <header class="screen-head">
       <h1 class="view-head__title">{{ $t('title.midiFileManager') }}</h1>
     </header>
 

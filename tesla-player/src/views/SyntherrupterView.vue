@@ -527,8 +527,8 @@ onMounted(() => {
 .sy-card__body--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.4rem 1.2rem; }
 
 .sy-bar {
-  flex: 0 0 auto; display: flex; align-items: center; gap: 0.6rem;
-  padding: 0.8rem 2rem; border-top: 1px solid var(--line);
+  flex: 0 0 auto; display: flex; align-items: center; gap: 1rem;
+  padding: 1.2rem 2rem; border-top: 1px solid var(--line);
   background: linear-gradient(180deg, var(--panel), var(--panel-2));
 }
 .sy-bar__reboot { margin-left: auto; }
