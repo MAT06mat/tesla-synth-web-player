@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -20,7 +21,7 @@ import { MidiFileResponse, MidiService } from './midi.service';
 
 @Controller('midi')
 export class MidiController {
-  constructor(private readonly midiService: MidiService) {}
+  constructor(private readonly midiService: MidiService) { }
 
   @Get()
   findAll(): Promise<MidiFileResponse[]> {
@@ -36,7 +37,8 @@ export class MidiController {
     if (!file) {
       throw new BadRequestException('No file provided');
     }
-    return this.midiService.create(file.originalname, file.filename, editorName);
+    const nameWithoutExt = file.originalname.replace(/\.[^/.]+$/, '');
+    return this.midiService.create(nameWithoutExt, file.filename, editorName);
   }
 
   /**
@@ -50,6 +52,44 @@ export class MidiController {
     @EditorName() editorName: string | null,
   ): Promise<MidiFileResponse> {
     return this.midiService.setPrograms(id, dto.programs, editorName);
+  }
+
+  /**
+   * Replace an existing MIDI file's content on disk while keeping its physical path.
+   * Updates its metadata (duration, channels, hash, etc).
+   */
+  @Put(':id/file')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: midiUploadOptions.limits,
+      fileFilter: midiUploadOptions.fileFilter,
+    }),
+  )
+  replaceFile(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
+    @EditorName() editorName: string | null,
+  ): Promise<MidiFileResponse> {
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+    const nameWithoutExt = file.originalname.replace(/\.[^/.]+$/, '');
+    return this.midiService.replaceFile(id, file.buffer, nameWithoutExt, editorName);
+  }
+
+  /**
+   * Rename a MIDI file.
+   */
+  @Patch(':id/name')
+  rename(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('name') name: string,
+    @EditorName() editorName: string | null,
+  ): Promise<MidiFileResponse> {
+    if (!name || name.trim() === '') {
+      throw new BadRequestException('Le nom ne peut pas être vide');
+    }
+    return this.midiService.rename(id, name.trim(), editorName);
   }
 
   @Delete(':id')

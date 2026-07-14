@@ -161,6 +161,55 @@ export class MidiService implements OnModuleInit {
     return this.toResponse(saved);
   }
 
+  /**
+   * Replace an existing MIDI file's content on disk while keeping its physical path.
+   * Updates its metadata (duration, channels, hash, etc).
+   */
+  async replaceFile(
+    id: number,
+    buffer: Buffer,
+    originalName: string,
+    editorName: string | null = null,
+  ): Promise<MidiFileResponse> {
+    const midiFile = await this.midiFileRepository.findOne({ where: { id } });
+    if (!midiFile) {
+      throw new NotFoundException(`MIDI file ${id} not found`);
+    }
+
+    const filePath = join(UPLOADS_DIR, basename(midiFile.path));
+
+    await fs.writeFile(filePath, buffer);
+
+    midiFile.name = originalName;
+    midiFile.durationMs = this.durationFromBuffer(buffer);
+    midiFile.channels = this.channelsFromBuffer(buffer);
+    midiFile.contentHash = hashBytes(buffer);
+    midiFile.updatedAt = Date.now();
+    midiFile.editorName = editorName;
+
+    const saved = await this.midiFileRepository.save(midiFile);
+    return this.toResponse(saved);
+  }
+
+  /** Rename a midi file */
+  async rename(
+    id: number,
+    newName: string,
+    editorName: string | null = null,
+  ): Promise<MidiFileResponse> {
+    const midiFile = await this.midiFileRepository.findOne({ where: { id } });
+    if (!midiFile) {
+      throw new NotFoundException(`MIDI file ${id} not found`);
+    }
+
+    midiFile.name = newName;
+    midiFile.updatedAt = Date.now();
+    midiFile.editorName = editorName;
+
+    const saved = await this.midiFileRepository.save(midiFile);
+    return this.toResponse(saved);
+  }
+
   async remove(id: number): Promise<void> {
     const midiFile = await this.midiFileRepository.findOne({ where: { id } });
     if (!midiFile) {
