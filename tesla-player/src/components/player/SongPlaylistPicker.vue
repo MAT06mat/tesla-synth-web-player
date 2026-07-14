@@ -194,6 +194,7 @@ function usesSpeaker(song: Song): boolean { return (song.output2Mask ?? 0) !== 0
   display: grid; place-items: center; cursor: pointer;
   background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line-strong);
   color: var(--text-dim); font-size: 0.8rem; transition: 0.13s;
+  padding: 3px 0 0 0;
 }
 .row-btn:hover { color: var(--volt); border-color: var(--volt); }
 .row-btn:disabled { opacity: 0.35; cursor: not-allowed; }

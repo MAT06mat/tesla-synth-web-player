@@ -30,6 +30,8 @@ export interface MidiFile {
   name: string;
   /** Server path, e.g. "/uploads/foo.mid". */
   path: string;
+  /** The number of channels, computed server-side. Null/undefined if unknown */
+  channels?: number | null;
   /** Total play length in ms, computed server-side. Null/undefined if unknown. */
   durationMs?: number | null;
   /** Who last uploaded/edited this (server-stamped from the OIDC token), or null. */

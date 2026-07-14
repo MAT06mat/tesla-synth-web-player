@@ -107,7 +107,7 @@ async function confirmDelete(): Promise<void> {
 </script>
 
 <template>
-  <div class="midi-lib">
+  <div class="midi-lib" style="height: 100%;">
     <input ref="fileInput" type="file" accept=".mid,.midi" style="display: none" @change="onFileChosen">
     <div class="dropzone" :class="{ 'is-drag': dragActive }" @click="pickFile"
       @dragover.prevent="dragActive = true" @dragleave.prevent="dragActive = false" @drop.prevent="onDrop">
@@ -142,6 +142,7 @@ async function confirmDelete(): Promise<void> {
         :class="{ 'is-current': f.id === currentId }">
         <span class="midi-lib__item-name">{{ f.name }}</span>
         <span class="midi-lib__item-dur">{{ formatDuration(f.durationMs) }}</span>
+        <span class="midi-lib__item-ch">{{ f.channels }} ch</span>
         <button class="midi-lib__dl" type="button" :title="$t('label.editInstruments')"
           @click="emit('edit-instruments', f)">
           <i class="fas fa-guitar"></i>

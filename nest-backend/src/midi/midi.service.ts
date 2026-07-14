@@ -14,12 +14,14 @@ import { hashBytes } from '../sync/content-hash';
 import { computeDurationMs } from './midi-duration';
 import { setMidiPrograms, type ProgramSetting } from './midi-programs';
 import { MidiFile } from './entities/midi-file.entity';
+import { computeChannels } from './midi-channels';
 
 /** JSON shape returned to the front, identical to the original Flask output. */
 export interface MidiFileResponse {
   id: number;
   name: string;
   path: string;
+  channels: number | null;
   durationMs: number | null;
   /** Who last uploaded/edited this (server-stamped from the OIDC token), or null. */
   editorName: string | null;
@@ -30,7 +32,7 @@ export class MidiService implements OnModuleInit {
   constructor(
     @InjectRepository(MidiFile)
     private readonly midiFileRepository: Repository<MidiFile>,
-  ) {}
+  ) { }
 
   /**
    * Back-fill, at boot, anything missing on existing rows: the play length
@@ -44,11 +46,13 @@ export class MidiService implements OnModuleInit {
       const patch: Partial<MidiFile> = {};
       const needDuration = file.durationMs == null;
       const needHash = !file.contentHash;
-      if (needDuration || needHash) {
+      const needChannels = file.channels == null;
+      if (needDuration || needHash || needChannels) {
         const buffer = await this.readUpload(basename(file.path));
         if (buffer) {
           if (needDuration) patch.durationMs = this.durationFromBuffer(buffer);
           if (needHash) patch.contentHash = hashBytes(buffer);
+          if (needChannels) patch.channels = this.channelsFromBuffer(buffer)
         }
       }
       if (!file.uuid) patch.uuid = randomUUID();
@@ -79,6 +83,7 @@ export class MidiService implements OnModuleInit {
       name: originalName,
       path: `./uploads/${storedName}`,
       durationMs: this.durationFromBuffer(buffer),
+      channels: this.channelsFromBuffer(buffer),
       uuid: randomUUID(),
       updatedAt: Date.now(),
       contentHash: buffer ? hashBytes(buffer) : undefined,
@@ -103,6 +108,16 @@ export class MidiService implements OnModuleInit {
     if (!buffer) return null;
     try {
       return computeDurationMs(buffer);
+    } catch {
+      return null;
+    }
+  }
+
+  /** The number of channels from an in-memory buffer, or null on failure. */
+  private channelsFromBuffer(buffer: Buffer | null): number | null {
+    if (!buffer) return null;
+    try {
+      return computeChannels(buffer);
     } catch {
       return null;
     }
@@ -168,6 +183,7 @@ export class MidiService implements OnModuleInit {
       id: midiFile.id,
       name: midiFile.name,
       path: midiFile.path,
+      channels: midiFile.channels,
       durationMs: midiFile.durationMs,
       editorName: midiFile.editorName ?? null,
     };

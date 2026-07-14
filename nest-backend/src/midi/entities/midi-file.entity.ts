@@ -16,6 +16,10 @@ export class MidiFile {
   @Column({ name: 'durationMs', type: 'integer', nullable: true })
   durationMs!: number | null;
 
+  /* The number of channels in the midi file */
+  @Column({ name: 'channels', type: 'integer', nullable: true })
+  channels!: number | null;
+
   /**
    * Sync identity (see SyncModule). Stable across instances: generated once on
    * create, preserved on apply. The UNIQUE index is created by the

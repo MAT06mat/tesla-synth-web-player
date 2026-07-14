@@ -91,7 +91,7 @@ export default {
       return this.routeId == null
     },
     songItems() {
-      return this.midiStore.midiSongList.map(s => ({ id: s.id, label: s.name || `#${s.id}` }))
+      return this.midiStore.midiSongList.map(s => ({ id: s.id, label: s.name ? `${s.name}  ·  ${s.coilCount} ⚡` : `#${s.id}` }))
     },
     currentSong() {
       const id = Number(this.routeId)

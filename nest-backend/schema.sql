@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS MidiFile (
 	name 			TEXT,
 	path 			TEXT,
 	durationMs		INTEGER,
+	channels		INTEGER,
 	uuid			TEXT,
 	updatedAt		INTEGER,
 	contentHash		TEXT,
