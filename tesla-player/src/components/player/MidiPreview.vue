@@ -337,8 +337,9 @@ watch(() => props.playheadMs, () => {
       </div>
 
       <div ref="bodyEl" class="preview__body">
+        <div class="preview__inner" :style="{ height: heightPx + 'px' }">
         <div v-if="hasData && showLanes" class="preview__rail" :class="{ 'is-compact': compact }"
-          :style="{ width: railW + 'px', height: heightPx + 'px' }">
+          :style="{ width: railW + 'px' }">
           <div class="preview__rail-head" :style="{ height: RULER_H + 'px' }"></div>
           <div v-if="showRoll" class="preview__rail-roll" :style="{ height: rollH + 'px' }"><i class="fas fa-music"></i></div>
           <div v-for="(lane, i) in railLanes" :key="i" class="preview__rail-lane" :style="{ height: laneH + 'px', '--c': lane.color }">
@@ -390,6 +391,7 @@ watch(() => props.playheadMs, () => {
             <line v-if="playing || paused" class="preview__playhead" :x1="playheadX" :x2="playheadX" :y1="0" :y2="heightPx" />
           </svg>
           <div v-else class="preview__empty">{{ $t('label.noMidiData') }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -407,11 +409,12 @@ watch(() => props.playheadMs, () => {
 }
 .preview__param { display: flex; border-radius: 0; border: 0; border-bottom: 1px solid var(--line); background: rgba(0, 0, 0, 0.18); padding: 4px; gap: 4px; flex: 0 0 auto; }
 .preview__param button { flex: 1 1 0; padding: 0.35rem; font-size: 0.74rem; }
-.preview__body { flex: 1 1 auto; min-height: 100px; display: flex; overflow-y: auto; overflow-x: hidden; }
+.preview__body { flex: 1 1 auto; min-height: 100px; overflow-y: auto; overflow-x: hidden; }
 .preview__scroll { flex: 1 1 auto; min-width: 0; overflow-x: auto; overflow-y: hidden; }
 .preview__svg { display: block; }
 .preview__svg.is-editable { cursor: crosshair; }
 .preview__noedit { fill: transparent; pointer-events: all; cursor: default; }
+.preview__inner { display: flex; width: 100%; }
 
 .preview__rail { flex: 0 0 auto; border-right: 1px solid var(--line); background: rgba(0, 0, 0, 0.18); }
 .preview__rail-head { border-bottom: 1px solid var(--line); }

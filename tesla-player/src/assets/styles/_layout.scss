@@ -507,7 +507,7 @@
         overflow-y: none;
         width: 100%;
         max-height: 4.6rem;
-        padding: 0.6rem 0.6rem;
+        padding: 0.2rem 0.6rem 1.2rem 0.6rem;
     }
     .sidebar--compact {
         width: 100%;
@@ -518,7 +518,7 @@
     .nav {
         flex-direction: row;
         width: 100%;
-        justify-content: space-between;
+        justify-content: space-around;
     }
     .nav > span {
         display: none;
@@ -526,7 +526,12 @@
     a.nav-item,
     .sidebar--compact a.nav-item {
         gap: 0.75rem;
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 0.2rem;
+        flex-direction: column;
+    }
+    .nav-item.router-link-active {
+        background: none;
+        box-shadow: none;
     }
     .nav-item .icon {
         font-size: large;
