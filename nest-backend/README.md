@@ -31,27 +31,33 @@ By default the SQLite database and the `uploads/` folder are read from the
 database is a no-op and never touches existing rows. TypeORM migrations run
 automatically on app start (`migrationsRun`).
 
+To create a new migration:
+
+```bash
+npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate src/database/migrations/<NAME_OF_THE_MIGRATION> -d src/database/data-source.ts
+```
+
 ## API
 
 All routes are under the global `/api` prefix.
 
-| Method | Route                    | Notes |
-|--------|--------------------------|-------|
-| GET    | `/api/ping`              | `{ "ping": "pong" }` |
-| GET    | `/api/songs`             | full nested representation (coils + events) |
-| POST   | `/api/songs`             | returns the created song |
-| PUT    | `/api/songs/:id`         | id in the path (RESTful) |
-| DELETE | `/api/songs/:id`         | cascades coils + playlist entries |
-| GET    | `/api/midi`              | |
-| POST   | `/api/midi`              | multipart `file` field |
+| Method | Route                    | Notes                                                                     |
+| ------ | ------------------------ | ------------------------------------------------------------------------- |
+| GET    | `/api/ping`              | `{ "ping": "pong" }`                                                      |
+| GET    | `/api/songs`             | full nested representation (coils + events)                               |
+| POST   | `/api/songs`             | returns the created song                                                  |
+| PUT    | `/api/songs/:id`         | id in the path (RESTful)                                                  |
+| DELETE | `/api/songs/:id`         | cascades coils + playlist entries                                         |
+| GET    | `/api/midi`              |                                                                           |
+| POST   | `/api/midi`              | multipart `file` field                                                    |
 | PATCH  | `/api/midi/:id/programs` | rewrites the file's per-channel instruments (affects every song using it) |
-| DELETE | `/api/midi/:id`          | also deletes the file on disk |
-| GET    | `/api/playlists`         | |
-| POST   | `/api/playlists`         | |
-| PUT    | `/api/playlists/:id`     | id in the path (RESTful) |
-| DELETE | `/api/playlists/:id`     | |
-| GET    | `/api/settings`          | operator config (coil names, default coil count) |
-| PUT    | `/api/settings`          | update the operator config |
+| DELETE | `/api/midi/:id`          | also deletes the file on disk                                             |
+| GET    | `/api/playlists`         |                                                                           |
+| POST   | `/api/playlists`         |                                                                           |
+| PUT    | `/api/playlists/:id`     | id in the path (RESTful)                                                  |
+| DELETE | `/api/playlists/:id`     |                                                                           |
+| GET    | `/api/settings`          | operator config (coil names, default coil count)                          |
+| PUT    | `/api/settings`          | update the operator config                                                |
 
 ### Design notes
 
