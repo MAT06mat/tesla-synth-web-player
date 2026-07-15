@@ -210,7 +210,7 @@ function onSongFinished(): void { next(true); }
 
 /* narrow screens: stack and drop the divider (override the inline flex) */
 @media (max-width: 900px) {
-  .playback { flex-direction: column; }
+  .playback { flex-direction: column; gap: 1rem; }
   .playback-left, .playback-right { flex: 1 1 auto !important; }
   .playback__split { display: none; }
 }

@@ -79,11 +79,12 @@
     flex: 1;
     display: grid;
     place-items: center;
+    max-width: 100%;
 }
 // "fondu" — no card/box, content blends into the background
 .edit-chooser__card {
     width: 100%;
-    max-width: 600px;
+    max-width: min(600px, 100%);
     padding: 0 1.5rem;
     text-align: center;
 }
@@ -149,6 +150,7 @@
 .screen-body {
     padding: 0rem 2rem 1.4rem;
 }
+
 // variant: body fills the remaining viewport height so columns can stretch and
 // scroll internally (used by the Play screen so the player fills its column).
 .screen-body--fill {
@@ -338,6 +340,21 @@
         display: none;
     }
 }
+
+@media (max-width: 1000px) {
+    .screen-head {
+        padding: 0.8rem 1rem;
+        min-height: 4.6rem;
+    }
+    .screen-body,
+    .edit-body {
+        padding: 0 1rem 1rem;
+    }
+    .edit-chooser__actions {
+        flex-direction: column-reverse;
+    }
+}
+
 .field-block {
     display: flex;
     flex-direction: column;
@@ -507,6 +524,9 @@
     }
 }
 @media (max-width: 680px) {
+    .mode-switch {
+        display: none;
+    }
     .coils-grid {
         grid-template-columns: minmax(0, 1fr);
     }
