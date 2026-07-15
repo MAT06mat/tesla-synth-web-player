@@ -194,7 +194,6 @@
     min-width: 0;
     min-height: 0;
     align-self: stretch;
-    padding-right: 1rem;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -214,16 +213,15 @@
     top: 5rem;
     // fill the viewport beside the (scrolling) editor; leave a small bottom gap so
     // the player bottom lines up with the sticky save button.
-    height: calc(100vh - 5rem - 1rem);
+    height: calc(100vh - 5rem - 1.4rem);
     display: flex;
     flex-direction: column;
-    padding-left: 1rem;
 }
 // the draggable divider rides with the sticky dock (stays fixed while the editor scrolls)
 .edit-body__split {
     position: sticky;
     top: 5rem;
-    height: calc(100vh - 5rem - 1rem);
+    height: calc(100vh - 5rem - 1.4rem);
     align-self: flex-start;
 }
 .edit-body__dock .player-panel {

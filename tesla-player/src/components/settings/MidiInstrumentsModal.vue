@@ -125,7 +125,7 @@ async function save(): Promise<void> {
 }
 .instr-file i { color: var(--volt); margin-right: 0.35rem; }
 .instr-warning {
-  display: flex; align-items: flex-start; gap: 0.5rem; margin: 0 0 1rem; padding: 0.6rem 0.8rem;
+  display: flex; align-items: center; gap: 0.5rem; margin: 0 0 1rem; padding: 0.6rem 0.8rem;
   border: 1px solid var(--danger); border-radius: 8px; background: rgba(255, 90, 90, 0.08);
   color: var(--text); font-size: 0.8rem; line-height: 1.4;
 }

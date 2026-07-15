@@ -742,35 +742,40 @@
     position: absolute;
     right: 0;
     top: 100%;
-    margin-top: 0.2rem;
+    margin-top: 0.3rem;
     background: var(--bg-2);
     border: 1px solid var(--line-strong);
     border-radius: 8px;
     padding: 0.3rem;
-    display: flex;
+    display: none;
     flex-direction: column;
-    min-width: 160px;
+    width: 160px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     z-index: 100;
 
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-5px);
+    animation: dropdownFadeDown 0.15s ease forwards;
     transition:
         opacity 0.2s,
         transform 0.2s,
         visibility 0.2s;
-}
 
-.midi-lib__item:nth-last-child(-n + 3) .midi-lib__dropdown-menu {
-    top: unset;
-    bottom: 100%;
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 0.4rem;
+        bottom: 100%;
+    }
 }
 
 .midi-lib__dropdown:hover .midi-lib__dropdown-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    display: flex;
 }
 
 .midi-lib__dropdown-item {
@@ -801,6 +806,9 @@
 .midi-lib__dropdown-item:hover {
     background: var(--line-strong);
     color: var(--text);
+    .midi-lib__usage-title {
+        text-decoration: underline;
+    }
 }
 
 .midi-lib__dropdown-item.is-danger:hover {
@@ -877,8 +885,126 @@
     font-size: 0.78rem;
     font-variant-numeric: tabular-nums;
 }
+.midi-lib__usages {
+    margin-left: 0.5rem;
+}
+.midi-lib__usages-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    cursor: default;
+    transition: 0.15s;
+    padding: 0.3rem 0;
+}
+.midi-lib__usages-badge i {
+    padding-top: 3px;
+}
 
-// sidebar: MIDI output selectors
+.midi-lib__usages-badge:hover {
+    color: var(--volt);
+}
+
+.midi-lib__dropdown-menu.is-usages {
+    min-width: 200px;
+    width: auto;
+    max-width: 300px;
+    right: auto;
+    left: -50px;
+    animation: usagesFadeDown 0.15s ease forwards;
+}
+.midi-lib__usages:hover .midi-lib__dropdown-menu.is-usages {
+    transform: translate(-50%, 0);
+}
+.midi-lib__dropdown-header {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    color: var(--text-mute, #888);
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--line-strong);
+    margin-bottom: 0.2rem;
+}
+.midi-lib__dropdown-menu.is-usages .midi-lib__dropdown-item {
+    justify-content: space-between;
+}
+.midi-lib__usage-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+.midi-lib__usage-coils {
+    color: var(--text-mute);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-mono, monospace);
+    padding-top: 2px;
+}
+.midi-lib__usage-coils i {
+    color: var(--volt);
+}
+.midi-lib__dropdown-menu.is-dropup {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 0.3rem;
+    animation: dropdownFadeUp 0.15s ease forwards;
+    &::before {
+        bottom: auto;
+        top: 100%;
+    }
+}
+@keyframes dropdownFadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes dropdownFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes usagesFadeDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -5px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+@keyframes usagesFadeUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 5px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+.midi-lib__dropdown:hover .midi-lib__dropdown-menu.is-dropup {
+    transform: translateY(0);
+}
+.midi-lib__dropdown-menu.is-usages.is-dropup {
+    animation: usagesFadeUp 0.15s ease forwards;
+}
+.midi-lib__usages:hover .midi-lib__dropdown-menu.is-usages.is-dropup {
+    transform: translate(-50%, 0);
+}
 .sidebar__section-title {
     font-family: var(--font-display);
     text-transform: uppercase;
