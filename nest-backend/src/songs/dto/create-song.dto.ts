@@ -3,6 +3,7 @@ import {
   IsArray,
   IsIn,
   IsInt,
+  IsNumber,
   IsOptional,
   IsString,
   Max,
@@ -60,6 +61,10 @@ export class CreateSongDto {
   @ValidateNested({ each: true })
   @Type(() => CoilEventDto)
   events?: CoilEventDto[];
+
+  @IsArray()
+  @IsNumber({}, { each: true })
+  tagIds!: number[];
 
   /** Convenience accessor that resolves the MIDI file id from either field. */
   get resolvedMidiFileId(): number | null {

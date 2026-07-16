@@ -115,7 +115,19 @@ function usesSpeaker(song: Song): boolean { return (song.output2Mask ?? 0) !== 0
           <button class="row-btn" type="button" @click="emit('enqueue', song)" :title="$t('label.addToQueue')">
             <i class="fas fa-plus"></i>
           </button>
-          <span class="play-row__name">{{ song.name }}</span>
+          <div class="play-row__name-wrapper">
+            <span class="play-row__name">{{ song.name }}</span>
+            <div class="song-tags-display">
+              <span 
+                v-for="tag in song.tags" 
+                :key="tag.id" 
+                class="song-tag-pill" 
+                :style="{ '--tag-c': tag.color }"
+              >
+                {{ tag.name }}
+              </span>
+            </div>
+          </div>
           <span class="play-row__dur">{{ formatDuration(song.midiFile?.durationMs) }}</span>
           <span class="coil-dots">
             <span v-for="i in coilChips(song.coilCount)" :key="i" class="coil-dot" :style="{ '--c': coilColor(i) }"></span>
@@ -239,7 +251,7 @@ function usesSpeaker(song: Song): boolean { return (song.output2Mask ?? 0) !== 0
 .play-row.is-current { background: var(--volt-08); }
 .play-row.is-incompatible { opacity: 0.5; }
 .play-row__name {
-  flex: 1 1 auto; min-width: 0; font-weight: 500;
+  min-width: 0; font-weight: 500;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .play-row.is-current .play-row__name { color: var(--volt); }
@@ -247,5 +259,32 @@ function usesSpeaker(song: Song): boolean { return (song.output2Mask ?? 0) !== 0
 .incompat-flag {
   display: inline-flex; align-items: center; gap: 0.25rem; flex: 0 0 auto;
   color: var(--coil-1); font-family: var(--font-mono); font-size: 0.78rem;
+}
+
+.play-row__name-wrapper {
+  display: flex;
+  justify-content: start;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 0.6rem
+}
+
+.song-tags-display {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.song-tag-pill {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  color: var(--tag-c);
+  background-color: color-mix(in srgb, var(--tag-c) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tag-c) 30%, transparent);
+  white-space: nowrap;
 }
 </style>

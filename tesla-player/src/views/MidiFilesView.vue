@@ -36,7 +36,7 @@ function openInstruments(file: MidiFile): void {
 
 <style scoped>
 /* Centre the manager in a comfortable column rather than stretching it full-width. */
-.midi-files { display: flex; justify-content: center; min-height: 0; }
+.midi-files { display: flex; justify-content: center; min-height: 0; height: 100%; }
 .midi-files__panel {
   width: 100%; max-width: 720px; min-height: 0;
   display: flex; flex-direction: column;

@@ -104,6 +104,7 @@ export interface Song {
   coils: CoilConfig[];
   /** Mid-song parameter-change events (optional; future). */
   events?: CoilEvent[];
+  tags: AppTag[];
   /** Who last edited this (server-stamped from the OIDC token), or null. */
   editorName?: string | null;
 }
@@ -116,6 +117,12 @@ export interface Playlist {
   songIds: number[];
   /** Who last edited this (server-stamped from the OIDC token), or null. */
   editorName?: string | null;
+}
+
+export interface AppTag {
+  id?: number;
+  name: string;
+  color: string;
 }
 
 export const MIN_COILS = 1;

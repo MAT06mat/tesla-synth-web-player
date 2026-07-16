@@ -3,7 +3,7 @@ import { computed, reactive, ref, watch } from 'vue';
 import axios from 'axios';
 import { useMidiStore } from '@/stores/midi';
 import { MAX_COILS, MIN_COILS } from '@/types/domain';
-import type { CoilConfig, CoilEvent, CoilParam, MidiFile, Song } from '@/types/domain';
+import type { AppTag, CoilConfig, CoilEvent, CoilParam, MidiFile, Song } from '@/types/domain';
 import { analyzeMidi, type MidiAnalysis } from '@/midi/analyze';
 import { notify } from '@/utils/toast';
 import CoilConfigCard from '@/components/editor/CoilConfigCard.vue';
@@ -43,6 +43,7 @@ const draft = reactive({
   output2Mask: 0,
   coils: [defaultCoil(0), defaultCoil(1), defaultCoil(2)] as CoilConfig[],
   events: [] as CoilEvent[],
+  tags: [] as AppTag[],
 });
 // which automation parameter the timeline edits (coils view)
 const editParam = ref<CoilParam>('ontime');
@@ -50,6 +51,21 @@ const editParam = ref<CoilParam>('ontime');
 const midiFileItems = computed(() =>
   midiStore.midiFileList.map((f) => ({ id: f.id, label: f.name })),
 );
+const allTags = computed<AppTag[]>(() => midiStore.tagList || []);
+const availableTagsToAdd = computed(() => {
+  const currentIds = draft.tags.map(t => t.id);
+  return allTags.value.filter(t => !currentIds.includes(t.id));
+});
+
+function addTag(tag: AppTag) {
+  draft.tags.push(tag);
+}
+
+function removeTag(tagId: number | undefined) {
+  if (tagId !== undefined) {
+    draft.tags = draft.tags.filter(t => t.id !== tagId);
+  }
+}
 
 watch(() => draft.coilCount, (n) => {
   if (draft.coils.length === n) return;
@@ -67,6 +83,7 @@ function load(song: Song | null | undefined): void {
   draft.events = (song.events ?? []).map((e) => ({ ...e }));
   draft.coils = (song.coils ?? []).map((c) => ({ ...c }));
   draft.coilCount = song.coilCount ?? (draft.coils.length || 1);
+  draft.tags = (song.tags ?? []).map(t => ({ ...t }));
   while (draft.coils.length < draft.coilCount) draft.coils.push(defaultCoil(draft.coils.length));
   if (draft.coils.length > draft.coilCount) draft.coils.length = draft.coilCount;
 }
@@ -80,6 +97,7 @@ function resetNew(): void {
   draft.coilCount = count;
   draft.coils = Array.from({ length: count }, (_, i) => defaultCoil(i));
   draft.events = [];
+  draft.tags = [];
 }
 
 // Reload only when actually switching to a different song. This avoids the
@@ -110,19 +128,30 @@ function buildPayload() {
     events: draft.events
       .filter((e) => e.coilIndex < draft.coilCount)
       .map((e) => ({ coilIndex: e.coilIndex, atMs: Math.round(e.atMs), param: e.param, value: e.value })),
+    tagIds: draft.tags.map((t) => t.id),  
   };
 }
 
 async function save(): Promise<void> {
   const payload = buildPayload();
-  const { data } = draft.id
-    ? await axios.put<Song>(`/api/songs/${draft.id}`, payload)
-    : await axios.post<Song>('/api/songs', payload);
-  if (draft.id) midiStore.updateMidiSong(data);
-  else midiStore.addMidiSongToList(data);
-  draft.id = data.id;
-  emit('saved', data);
-  notify('label.songSaved');
+  const isNew = !draft.id;
+
+  try {
+    const { data } = isNew
+      ? await axios.post<Song>('/api/songs', payload)
+      : await axios.put<Song>(`/api/songs/${draft.id}`, payload);
+    
+    draft.id = data.id;
+
+    if (isNew) midiStore.addMidiSongToList(data);
+    else midiStore.updateMidiSong(data);
+
+    emit('saved', data);
+    notify('label.songSaved');
+  } catch (err) {
+    console.error('Save failed', err);
+    notify('error.saveFailed');
+  }
 }
 
 const confirmDeleteSong = ref(false);
@@ -202,6 +231,7 @@ function emitChange(): void {
     output2Mask: draft.output2Mask,
     coils: coilsPayload(),
     events: draft.events.filter((e) => e.coilIndex < draft.coilCount),
+    tags: draft.tags.map(t => ({ ...t })),
   };
   emit('change', song);
 }
@@ -226,6 +256,50 @@ const showLibrary = ref(false);
         <span v-if="song && song.editorName" class="editor-meta__editor">
           <i class="fas fa-user-pen"></i>{{ $t('auth.lastEditedBy', { name: song.editorName }) }}
         </span>
+      </div>
+
+      <div class="field-block field-block--wide">
+        <span class="field-label">{{ $t('label.tags') }}</span>
+        
+        <div class="editor-tags">
+          <div class="editor-tags__list" v-if="draft.tags.length > 0">
+            <span 
+              v-for="tag in draft.tags" 
+              :key="tag.id" 
+              class="song-tag-pill" 
+              :style="{ '--tag-c': tag.color }"
+            >
+              {{ tag.name }}
+              <button class="tag-rm" type="button" @click="removeTag(tag.id)" title="Retirer">
+                <i class="fas fa-xmark"></i>
+              </button>
+            </span>
+          </div>
+
+          <div class="midi-lib__dropdown" v-if="availableTagsToAdd.length > 0">
+            <button class="editor-tags__add" type="button" title="Ajouter un tag">
+              <i class="fas fa-plus"></i>
+            </button>
+            
+            <div class="midi-lib__dropdown-menu">
+              <div class="midi-lib__dropdown-header">Ajouter un tag</div>
+              <button 
+                v-for="t in availableTagsToAdd" 
+                :key="t.id" 
+                class="midi-lib__dropdown-item tag-dropdown-item"
+                type="button"
+                @click="addTag(t)"
+              >
+                <span class="cfg-name-dot" :style="{ '--c': t.color }"></span>
+                <span class="tag-dropdown-name">{{ t.name }}</span>
+              </button>
+            </div>
+          </div>
+          
+          <span v-else-if="draft.tags.length === 0 && allTags.length === 0" class="editor-tags__empty">
+            Aucun tag configuré globalement.
+          </span>
+        </div>
       </div>
 
       <div class="field-block">
@@ -320,5 +394,106 @@ const showLibrary = ref(false);
   margin-top: 0.35rem;
   font-size: 0.72rem;
   color: var(--text-mute);
+}
+
+.editor-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 2.35rem;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.3rem 0.3rem 0.3rem 0.3rem;
+  width: 100%;
+  outline: none;
+  transition: 0.15s;
+}
+
+.editor-tags__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem
+}
+
+.song-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.2rem 0.15rem 0.6rem;
+  border-radius: 4px;
+  color: var(--tag-c);
+  background-color: color-mix(in srgb, var(--tag-c) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tag-c) 30%, transparent);
+}
+
+.tag-rm {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition: 0.15s;
+}
+.tag-rm:hover {
+  opacity: 1;
+}
+
+.editor-tags__add {
+  background: transparent;
+  border: none;
+  color: var(--text-mute);
+  border-radius: 4px;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: 0.15s;
+  font-size: 0.72rem;
+  padding: 0.15rem 0.2rem 0.15rem 0.2rem;
+}
+.editor-tags__add:hover {
+  border-color: var(--volt);
+  color: var(--volt);
+  background: color-mix(in srgb, var(--volt) 10%, transparent);
+}
+
+.editor-tags__empty {
+  font-size: 0.75rem;
+  color: var(--text-mute);
+  font-style: italic;
+}
+
+.tag-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.tag-dropdown-name {
+  white-space: nowrap;
+}
+
+.editor-tags .midi-lib__dropdown-menu {
+  right: auto;
+  left: 0;
+  
+  max-width: 250px; 
+}
+
+.editor-tags .midi-lib__dropdown-menu::before {
+  left: 0;
+  right: 0;
 }
 </style>

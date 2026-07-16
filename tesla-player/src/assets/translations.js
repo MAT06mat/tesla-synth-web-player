@@ -300,6 +300,11 @@ export const messages = {
             confirm: "Confirm",
             cancel: "Cancel",
             deleteQuestion: "Permanently delete",
+            tags: "Tags",
+            addTag: "Add tag",
+            tagName: "Tag name",
+            tagColor: "Tag color",
+            noTagAvailable: "No tag available.",
         },
         auth: {
             signIn: "Sign in",
@@ -693,6 +698,11 @@ export const messages = {
             confirm: "Confirmer",
             cancel: "Annuler",
             deleteQuestion: "Supprimer définitivement",
+            tags: "Tags",
+            addTag: "Ajouter un tag",
+            tagName: "Nom du tag",
+            tagColor: "Couleur du tag",
+            noTagAvailable: "Aucun tag configuré.",
         },
         auth: {
             signIn: "Se connecter",

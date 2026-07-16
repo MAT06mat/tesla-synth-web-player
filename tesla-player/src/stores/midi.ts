@@ -8,7 +8,7 @@ import {
 } from '@/utils/live-sysex-helper';
 import { SYNTH_OUTPUT_ID, type MidiSink } from '@/audio/tesla-synth';
 import { SERIAL_OUTPUT_ID } from '@/serial/serial-midi';
-import type { AppConfig, CoilConfig, MidiFile, Song } from '@/types/domain';
+import type { AppConfig, AppTag, CoilConfig, MidiFile, Song } from '@/types/domain';
 
 interface MidiState {
   /** Output 1 (coils): a real WebMidi output or the built-in Tesla synth. */
@@ -17,6 +17,7 @@ interface MidiState {
   midiOutputList: Output[] | null;
   midiFileList: MidiFile[];
   midiSongList: Song[];
+  tagList: AppTag[];
   /** Auto-start a track on select / when the previous one ends (persisted). */
   autoplay: boolean;
   /** Manual timing offset (ms) applied to the 2nd output to compensate a hardware
@@ -46,6 +47,7 @@ export const useMidiStore = defineStore('midi', {
     midiOutputList: null,
     midiFileList: [],
     midiSongList: [],
+    tagList: [],
     autoplay: localStorage.getItem('autoplay') === '1', // default OFF
     output2OffsetMs: clampOffset(Number(localStorage.getItem('midiOutput2Offset'))),
     appConfig: { coilNames: [], defaultCoilCount: 3 },
@@ -108,6 +110,9 @@ export const useMidiStore = defineStore('midi', {
     },
     addMidiSongToList(song: Song) {
       this.midiSongList.push(song);
+    },
+    setTagList(list: AppTag[]) {
+      this.tagList = list;
     },
     updateMidiSong(song: Song) {
       const index = this.midiSongList.findIndex((s) => s.id === song.id);

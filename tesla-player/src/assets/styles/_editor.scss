@@ -133,8 +133,8 @@
     justify-content: space-between;
     margin: 0;
     padding: 0.9rem 2rem;
-    background: transparent;
-    transition: all ease 200ms;
+    background-color: transparent;
+    transition: all ease 300ms;
     pointer-events: none; // transparent zone lets clicks reach content
     min-height: 5rem;
 }
@@ -143,7 +143,7 @@
 }
 // slightly opaque + blurred once the content scrolls beneath it (set by EditView)
 .screen-head.is-scrolled {
-    background: linear-gradient(180deg, var(--scrim-90), var(--scrim-45));
+    background-color: var(--scrim-45);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
 }
@@ -845,7 +845,6 @@ input[type="number"]::-webkit-inner-spin-button {
     width: 100%;
     max-width: 560px;
     max-height: 80vh;
-    overflow-y: auto;
     background: linear-gradient(180deg, var(--panel-2), var(--panel));
     border: 1px solid var(--line-strong);
     border-radius: var(--radius);

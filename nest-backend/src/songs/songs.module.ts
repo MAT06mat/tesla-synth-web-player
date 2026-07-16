@@ -6,10 +6,11 @@ import { CoilEvent } from './entities/coil-event.entity';
 import { Song } from './entities/song.entity';
 import { SongsController } from './songs.controller';
 import { SongsService } from './songs.service';
+import { Tag } from '../tags/entities/tag.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Song, Coil, CoilEvent, MidiFile])],
+  imports: [TypeOrmModule.forFeature([Song, Coil, CoilEvent, MidiFile, Tag])],
   controllers: [SongsController],
   providers: [SongsService],
 })
-export class SongsModule {}
+export class SongsModule { }

@@ -37,6 +37,7 @@ export default {
       this.axios.get('/api/midi').then(r => this.midiStore.setMidiFileList(r.data)).catch(() => {})
       this.axios.get('/api/songs').then(r => this.midiStore.setMidiSongList(r.data)).catch(() => {})
       this.axios.get('/api/settings').then(r => this.midiStore.setAppConfig(r.data)).catch(() => {})
+      this.axios.get('/api/tags').then(r => this.midiStore.setTagList(r.data)).catch(() => {})
     }
   },
   watch: {

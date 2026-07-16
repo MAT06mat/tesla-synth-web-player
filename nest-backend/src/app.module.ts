@@ -11,6 +11,7 @@ import { PlaylistsModule } from './playlists/playlists.module';
 import { SettingsModule } from './settings/settings.module';
 import { SongsModule } from './songs/songs.module';
 import { SyncModule } from './sync/sync.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { SyncModule } from './sync/sync.module';
     AuthModule,
     HealthModule,
     SongsModule,
+    TagsModule,
     MidiModule,
     PlaylistsModule,
     SettingsModule,
@@ -46,4 +48,4 @@ import { SyncModule } from './sync/sync.module';
     DownloadsModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

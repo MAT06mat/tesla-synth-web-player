@@ -201,7 +201,7 @@
 
   <!-- sidebar action modals (config / desktop sync+server / download) -->
   <general-config-modal :open="configOpen" :config="midiStore.appConfig"
-    @save="saveConfig" @close="configOpen = false" />
+    @save="saveConfig" @close="configOpen = false" :tags="midiStore.tagList" />
   <server-config-modal v-if="isElectron" :open="serverOpen"
     @close="serverOpen = false" @saved="onServerSaved" />
   <sync-modal v-if="isElectron" :open="syncOpen"
@@ -306,11 +306,14 @@ export default {
   },
   methods: {
     coilColor,
-    saveConfig(config) {
+    saveConfig({config, tags}) {
       this.axios.put('/api/settings', config)
         .then(r => { this.midiStore.setAppConfig(r.data); notify('label.settingsSaved') })
         .catch(err => console.error('Save config failed', err))
         .finally(() => { this.configOpen = false })
+      this.axios.put("/api/tags/sync", tags)
+        .then(r => { this.midiStore.setTagList(r.data) })
+        .catch(err => console.error('Save config failed', err))
     },
     // Resolve output 1 from the current mode. Output 2 is always a WebMIDI device.
     // A live serial link is never clobbered (a WebMIDI (dis)connect must not drop

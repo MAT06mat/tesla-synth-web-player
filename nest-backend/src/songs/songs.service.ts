@@ -8,6 +8,7 @@ import { CreateSongDto } from './dto/create-song.dto';
 import { Coil } from './entities/coil.entity';
 import { CoilEvent } from './entities/coil-event.entity';
 import { PlaybackMode, Song } from './entities/song.entity';
+import { Tag } from '../tags/entities/tag.entity';
 
 /** JSON shape returned to the front (the structured per-coil model). */
 export interface SongResponse {
@@ -31,6 +32,7 @@ export interface SongResponse {
     param: string;
     value: number;
   }[];
+  tags: Tag[];
 }
 
 @Injectable()
@@ -40,10 +42,10 @@ export class SongsService {
     private readonly songRepository: Repository<Song>,
     @InjectRepository(MidiFile)
     private readonly midiFileRepository: Repository<MidiFile>,
-  ) {}
+  ) { }
 
   async findAll(): Promise<SongResponse[]> {
-    const songs = await this.songRepository.find();
+    const songs = await this.songRepository.find({ relations: ['tags'] });
     return songs.map((song) => this.toResponse(song));
   }
 
@@ -63,7 +65,10 @@ export class SongsService {
     dto: CreateSongDto,
     editorName: string | null = null,
   ): Promise<SongResponse> {
-    const song = await this.songRepository.findOne({ where: { id } });
+    const song = await this.songRepository.findOne({
+      where: { id },
+      relations: ['tags']
+    });
     if (!song) {
       throw new NotFoundException(`Song ${id} not found`);
     }
@@ -90,7 +95,7 @@ export class SongsService {
   }
 
   private async findOneOrThrow(id: number): Promise<SongResponse> {
-    const song = await this.songRepository.findOne({ where: { id } });
+    const song = await this.songRepository.findOne({ where: { id }, relations: ['tags'] });
     if (!song) {
       throw new NotFoundException(`Song ${id} not found`);
     }
@@ -127,6 +132,8 @@ export class SongsService {
       return event;
     });
 
+    song.tags = dto.tagIds.map((tagId) => ({ id: tagId } as any))
+
     return song;
   }
 
@@ -158,11 +165,11 @@ export class SongsService {
       editorName: song.editorName ?? null,
       midiFile: song.midiFile
         ? {
-            id: song.midiFile.id,
-            name: song.midiFile.name,
-            path: song.midiFile.path,
-            durationMs: song.midiFile.durationMs,
-          }
+          id: song.midiFile.id,
+          name: song.midiFile.name,
+          path: song.midiFile.path,
+          durationMs: song.midiFile.durationMs,
+        }
         : null,
       coils: [...(song.coils ?? [])]
         .sort((a, b) => a.coilIndex - b.coilIndex)
@@ -178,6 +185,25 @@ export class SongsService {
         param: e.param,
         value: e.value,
       })),
+      tags: song.tags ?? []
     };
+  }
+
+  async updateTags(songId: number, tagIds: number[], editorName: string | null = null): Promise<Song> {
+    const song = await this.songRepository.findOne({
+      where: { id: songId },
+      relations: ['tags']
+    });
+
+    if (!song) {
+      throw new NotFoundException(`Song ${songId} not found`);
+    }
+
+    song.tags = tagIds.map(id => ({ id } as any));
+
+    song.updatedAt = Date.now();
+    song.editorName = editorName;
+
+    return this.songRepository.save(song);
   }
 }
