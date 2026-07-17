@@ -147,13 +147,24 @@ function clearQueue(): void {
 }
 // remove one entry from the up-next list (by its position in the play order)
 function removeAt(opos: number): void {
+  const queueIdx = order.value[opos];
   order.value.splice(opos, 1);
+  queue.value.splice(queueIdx, 1);
+  for (let i = 0; i < order.value.length; i++) {
+    if (order.value[i] > queueIdx) {
+      order.value[i]--;
+    }
+  }
   if (opos < pos.value) {
-    pos.value--; // an earlier item went away → keep pointing at the same track
+    pos.value--
   } else if (opos === pos.value) {
-    // removed the current track → fall onto the next one (or stop if none left)
-    if (order.value.length === 0) { player.value?.stop(); pos.value = -1; }
-    else { if (pos.value >= order.value.length) pos.value = order.value.length - 1; playCurrent(); }
+    if (order.value.length === 0) { 
+      player.value?.stop(); 
+      pos.value = -1; 
+    } else { 
+      if (pos.value >= order.value.length) pos.value = order.value.length - 1; 
+      playCurrent(); 
+    }
   }
 }
 // drag-and-drop reorder: QueuePanel tracks the drag and emits the final move.
