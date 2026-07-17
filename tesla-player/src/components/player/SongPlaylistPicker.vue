@@ -120,7 +120,7 @@ function usesSpeaker(song: Song): boolean { return (song.output2Mask ?? 0) !== 0
             <div class="song-tags-display">
               <span 
                 v-for="tag in song.tags" 
-                :key="tag.id" 
+                :key="tag.id ?? tag.name" 
                 class="song-tag-pill" 
                 :style="{ '--tag-c': tag.color }"
               >

@@ -368,8 +368,8 @@ function alignDropdown(e: MouseEvent): void {
                 <span class="midi-lib__item-dur">{{
                     formatDuration(f.durationMs)
                 }}</span>
-                <span class="midi-lib__item-ch">{{ f.channels }} ch</span>
-                <div class="midi-lib__usages midi-lib__dropdown" v-if="songsByMidi.get(f.id)?.length !== null" @mouseenter="alignDropdown">
+                <span class="midi-lib__item-ch">{{f.channels == null ? '-' : f.channels }} ch</span>
+                <div class="midi-lib__usages midi-lib__dropdown" @mouseenter="alignDropdown">
                 <div class="midi-lib__usages-badge">
                   {{  songsByMidi.get(f.id) ? songsByMidi.get(f.id)?.length : 0 }}
                   <i class="fas fa-music"></i>

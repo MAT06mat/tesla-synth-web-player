@@ -128,7 +128,7 @@ function buildPayload() {
     events: draft.events
       .filter((e) => e.coilIndex < draft.coilCount)
       .map((e) => ({ coilIndex: e.coilIndex, atMs: Math.round(e.atMs), param: e.param, value: e.value })),
-    tagIds: draft.tags.map((t) => t.id),  
+    tagIds: draft.tags.filter((t) => t.id !== undefined).map((t) => t.id),  
   };
 }
 
@@ -265,7 +265,7 @@ const showLibrary = ref(false);
           <div class="editor-tags__list" v-if="draft.tags.length > 0">
             <span 
               v-for="tag in draft.tags" 
-              :key="tag.id" 
+              :key="tag.id ?? tag.name" 
               class="song-tag-pill" 
               :style="{ '--tag-c': tag.color }"
             >

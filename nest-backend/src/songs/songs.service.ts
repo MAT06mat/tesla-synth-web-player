@@ -132,7 +132,7 @@ export class SongsService {
       return event;
     });
 
-    song.tags = dto.tagIds.map((tagId) => ({ id: tagId } as any))
+    song.tags = (dto.tagIds ?? []).filter((id): id is number => typeof id === 'number').map((tagId) => ({ id: tagId } as any));
 
     return song;
   }

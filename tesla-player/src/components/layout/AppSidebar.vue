@@ -313,7 +313,7 @@ export default {
         .finally(() => { this.configOpen = false })
       this.axios.put("/api/tags/sync", tags)
         .then(r => { this.midiStore.setTagList(r.data) })
-        .catch(err => console.error('Save config failed', err))
+        .catch(err => console.error('Save tags failed', err))
     },
     // Resolve output 1 from the current mode. Output 2 is always a WebMIDI device.
     // A live serial link is never clobbered (a WebMIDI (dis)connect must not drop

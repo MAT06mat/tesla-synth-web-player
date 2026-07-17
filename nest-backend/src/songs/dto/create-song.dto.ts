@@ -64,7 +64,7 @@ export class CreateSongDto {
 
   @IsArray()
   @IsNumber({}, { each: true })
-  tagIds!: number[];
+  tagIds: number[] = [];
 
   /** Convenience accessor that resolves the MIDI file id from either field. */
   get resolvedMidiFileId(): number | null {

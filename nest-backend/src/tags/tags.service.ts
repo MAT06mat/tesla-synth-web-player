@@ -25,11 +25,22 @@ export class TagService {
   async syncAll(incomingTags: SyncTagDto[]): Promise<Tag[]> {
     const existingTags = await this.tagRepository.find();
 
-    // 1. Identify which tags to delete (they exist in DB but not in the incoming payload)
-    const incomingIds = incomingTags.map(t => t.id).filter(id => id != null);
-    const tagsToRemove = existingTags.filter(t => !incomingIds.includes(t.id));
+    // 1. Identify which tags to delete
+    const incomingIds = incomingTags
+      .map((t) => t.id)
+      .filter((id): id is number => typeof id === 'number');
+    const tagsToRemove = existingTags.filter((t) => !incomingIds.includes(t.id));
 
     if (tagsToRemove.length > 0) {
+      const ids = tagsToRemove.map((t) => t.id);
+
+      await this.tagRepository.manager
+        .createQueryBuilder()
+        .delete()
+        .from('song_tags')
+        .where('tagId IN (:...ids)', { ids })
+        .execute();
+
       await this.tagRepository.remove(tagsToRemove);
     }
 
