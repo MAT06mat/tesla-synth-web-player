@@ -93,14 +93,6 @@
     color: var(--ink);
 }
 
-// slider (bulma-slider) accent
-input[type="range"].slider.is-warning::-webkit-slider-thumb {
-    background: var(--volt) !important;
-}
-input[type="range"].slider:focus {
-    outline: none;
-}
-
 // web build: discreet "download desktop app" link at the very bottom (no box)
 .sidebar__action {
     display: flex;

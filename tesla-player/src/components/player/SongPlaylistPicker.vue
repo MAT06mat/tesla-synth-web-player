@@ -226,8 +226,8 @@ function usesSpeaker(song: Song): boolean { return (song.output2Mask ?? 0) !== 0
   position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%);
   color: var(--text-mute); pointer-events: none; font-size: 0.85rem;
 }
-.coil-select { flex: 0 0 auto; width: auto; }
-.coil-select select { padding: 0.5rem 1.9rem 0.5rem 0.7rem; font-family: var(--font-mono); font-size: 0.85rem; }
+.coil-select { flex: 0 0 auto; width: auto; height: 100%; }
+.coil-select select { padding: 0.5rem 1.9rem 0.5rem 0.7rem; height: 100%; font-family: var(--font-mono); font-size: 0.85rem; }
 
 /* playlist action bar */
 .playlist-bar { display: flex; align-items: center; gap: 0.6rem; padding: 0 1rem 0.7rem; flex: 0 0 auto; }

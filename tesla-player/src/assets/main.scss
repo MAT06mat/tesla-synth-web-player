@@ -7,7 +7,7 @@
 //  - bulma-overrides MUST be last (relies on source order to beat Bulma)
 
 @import "styles/bulma-config"; // Bulma $variable overrides (dark theme)
-@import "styles/bulma-import"; // compile Bulma + bulma-slider with those overrides
+@import "styles/bulma-import"; // compile Bulma with those overrides
 @import "styles/tokens"; // :root design tokens
 @import "styles/base"; // base elements, typography, scrollbar
 @import "styles/layout"; // app shell, sidebar, brand/nav, view scaffolding

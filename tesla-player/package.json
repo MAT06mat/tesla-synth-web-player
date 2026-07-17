@@ -17,7 +17,6 @@
     "@fortawesome/fontawesome-free": "^7.1.0",
     "axios": "^1.13.2",
     "bulma": "^0.9.3",
-    "bulma-slider": "^2.0.5",
     "jzz": "^1.9.6",
     "oidc-client-ts": "^3.5.0",
     "pinia": "^3.0.4",
