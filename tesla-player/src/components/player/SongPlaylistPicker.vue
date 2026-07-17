@@ -40,7 +40,7 @@ const filteredSongs = computed<Song[]>(() => {
   return songs.value.filter(
     (s) =>
       (coilFilter.value == null || s.coilCount === coilFilter.value) &&
-      (q === '' || s.name.toLowerCase().includes(q)),
+      (q === '' || (s.name.toLowerCase() + s.tags.map((t) => t.name).join(" ").toLowerCase()).includes(q)),
   );
 });
 
